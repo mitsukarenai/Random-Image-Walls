@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title id="titleprogress">Random Imgur Wall</title>
+<style type="text/css">
+body {color:white;font-family:sans-serif;background-color:black;}
+span#current{font-family:monospace}
+</style>
+<script type="text/javascript">
+
+	var bodyWidth = GetWidth();
+	var imageWidth = Math.floor((bodyWidth-25)/5);
+	var numCols = Math.floor(bodyWidth/imageWidth);
+	var columns = Array();
+	for (i=0; i<numCols; i++)
+	{
+	  columns[i] = 200;
+	}
+	var totalCounter = 0;
+	var threads = 0;
+	var syncloc = 0;
+	
+function GetWidth()
+  {
+          var x = 0;
+          if (self.innerHeight)
+          {
+                  x = self.innerWidth;
+          }
+          else if (document.documentElement && document.documentElement.clientHeight)
+          {
+                  x = document.documentElement.clientWidth;
+          }
+          else if (document.body)
+          {
+                  x = document.body.clientWidth;
+          }
+          return x;
+  };
+
+function randomString(string_length)
+{
+	var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+	var output = "";
+	var index;
+
+	for (var i = 0; i < string_length; i++)
+	{
+		var index = Math.floor(Math.random() * chars.length);
+		output += chars.substring(index, index + 1);
+	}
+	document.getElementById("current").innerHTML = output;
+	return output;
+};
+
+function creatediv(id, html) {
+   var newdiv = document.createElement('div');
+   newdiv.setAttribute('id', id);
+   
+   newdiv.innerHTML = html;
+   newdiv.style.display = "inline";
+   //newdiv.style.position = "absolute";
+   document.body.appendChild(newdiv);
+   return newdiv;
+} ;
+
+function getLowestIndex() {
+	var proc = false;
+	while (!proc) {
+		if (syncloc == 0) {
+			syncloc = 1;
+			var lowestIndex = 0;
+			var lowestDepth = columns[0];
+			for (var i = 1; i < numCols; i++)
+			{
+				if (columns[i] < lowestDepth) {
+					lowestDepth = columns[i];
+					lowestIndex = i;
+				}
+			}
+			
+			syncloc = 0;
+			return lowestIndex;
+		}
+	}
+};
+			
+
+
+function loadImages() 
+{
+	if (totalCounter < 10) {
+		document.getElementById('p').value = totalCounter;
+		document.getElementById('titleprogress').innerHTML= '('+totalCounter+'/10) '+'Random Imgur Wall';
+		if (threads < 10) {
+			setTimeout(function() { loadImages();},100);
+			var imgObject = new Image();
+			imgObject.onload = function()
+			{
+				if (this.width == 161 && this.height == 81)
+				{
+					var randStr = randomString(7);
+					this.src = "http://i.imgur.com/" + randStr + ".jpg";
+				} else {
+					var randStr = randomString(7);
+					var newdiv = creatediv(randStr, "<a target=\"_blank\" href=\"" + imgObject.src + "\"><img src=\"" + imgObject.src + "\" width=\""+imageWidth+"\" height=\"" + Math.floor(Math.min((imgObject.height * (1 / (imgObject.width / imageWidth))),imageWidth)) + "\" /></a>");
+					var lowestIndex = getLowestIndex();
+					columns[lowestIndex] += Math.floor(Math.min((imgObject.height * (1 / (imgObject.width / imageWidth))),imageWidth));
+					
+					newdiv.style.left = (lowestIndex) * imageWidth;
+					newdiv.style.top = columns[lowestIndex] - Math.floor(Math.min((imgObject.height * (1 / (imgObject.width / imageWidth))),imageWidth));
+					threads--;
+					totalCounter++;
+					setTimeout(function() { loadImages();},100);
+				}
+			}
+
+			imgObject.src = "http://i.imgur.com/" + randomString(7) + ".jpg";
+			threads++; 
+		}
+	} else {
+		if (threads == 0) {
+			document.getElementById("dots").innerHTML = 'Done!';
+			document.getElementById('titleprogress').innerHTML= '(done) Random Imgur Wall';
+			var newdiv = creatediv("reloadme", "<h1><a href=\"#\" onClick=\"window.location.reload();return false;\">→reload←</a></h1>");
+			for (var i = 0; i < numCols; i++)
+			{
+				
+				var lowestIndex = i;
+				columns[lowestIndex] += 300;
+							
+				newdiv.style.left = (lowestIndex) * imageWidth;
+				newdiv.style.top = columns[lowestIndex] - 300;
+			}
+			
+		}	
+	}
+};
+
+</script>
+<body onLoad="loadImages();">
+<h1>Random Imgur Wall</h1>
+<div id="dots">Finding 10 images, need a few minutes. [<span id="current"></span>] <progress id='p' value='0' max="10"></progress>
+</div>
+</body>
+</html>
