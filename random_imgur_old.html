@@ -8,6 +8,7 @@ body {color:white;font-family:sans-serif;background-color:black;}
 span#current{font-family:monospace}
 img{height:200px;max-width:600px;border:1px solid #000;}
 img:hover {border:1px solid #fff;}
+a{color:#fff;}
 </style>
 <script type="text/javascript">
 
@@ -127,7 +128,7 @@ function loadImages()
 
 			document.getElementById("dots").innerHTML = 'Done!';
 			document.getElementById('titleprogress').innerHTML= '(done) Random Imgur Wall - (old id5)';
-			var newdiv = creatediv("reloadme", "<h1><a href=\"#\" onClick=\"window.location.reload();return false;\">→reload←</a></h1>");
+
 			for (var i = 0; i < numCols; i++)
 			{
 				
@@ -145,7 +146,7 @@ function loadImages()
 </script>
 <body onLoad="loadImages();">
 <h1>Random Imgur Wall (old id5)</h1>
-<p>Warning: the script "bruteforces" Imgur for totally random pictures. May include offensive content.</p>
+<p>Warning: the script "bruteforces" Imgur for totally random pictures. May include offensive content. <a href="#" onClick="window.location.reload();return false;">→reload←</a></p>
 <p id="dots">Loading 100 images [<span id="current"></span>] <progress id='p' value='0' max="100"></progress></p>
 </body>
 </html>
