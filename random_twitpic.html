@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title id="titleprogress">Random Twitpic Wall</title>
+<style type="text/css">body{color:white;font-family:sans-serif;background-color:black;}span#current{font-family:monospace}a{color:#fff;}
+.pics {
+    list-style-type: none;
+    padding:0;
+    margin:0;
+}
+
+.pics li {
+    display: inline-block;
+    width: 75px;
+    height: 75px;
+    vertical-align: middle;
+    text-align:center;
+
+}
+
+.pics img {
+    max-width:75px;
+    max-height:75px;
+    vertical-align:middle;
+    border:1px solid #000;
+}
+
+.pics img:hover {
+  border:1px solid #fff;
+}
+
+</style>
+<script type="text/javascript">
+
+
+var totalCounter = 0;
+
+function getRandomInt(min, max) {
+    'use strict';
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomString(string_length)
+{
+	var chars = "0123456789abcdefghiklmnopqrstuvwxyz";
+	var output = "";
+	var index;
+
+	for (var id = 0; id < string_length; id++)
+	{
+		var index = Math.floor(Math.random() * chars.length);
+		output += chars.substring(index, index + 1);
+	}
+	document.getElementById("current").innerHTML = output;
+	return output;
+};
+
+
+
+    function reloadImage(pThis) {
+        // To prevent this from being executed over and over
+        pThis.onerror = null; 
+     
+        // Refresh the src attribute, which should make the
+        // browsers reload the iamge.
+        pThis.src = pThis.src;
+    }
+
+
+
+function getImg() {
+    'use strict';
+    var req = new XMLHttpRequest(), num = getRandomInt(5, 6);
+    var RandStr = randomString(num);
+    req.onreadystatechange = function () {
+        var dummy,
+            parser = new DOMParser(),
+            media,
+            pic = document.createElement('li'),
+            link = document.createElement('a'),
+            img = document.createElement('img');
+        if (this.readyState === 4) {
+            if (this.status === 200) {
+                dummy = parser.parseFromString(this.responseText, 'text/html');
+                media = dummy.getElementById('media');
+                if (media) {
+                    pic.appendChild(link);
+                    link.setAttribute('href', 'https://twitpic.com/' + RandStr);
+                    link.setAttribute('target', '_blank');
+                    img.setAttribute('src', 'https://twitpic.com/show/mini/' + RandStr);
+                    img.setAttribute('onError', 'reloadImage(this);');
+                    link.appendChild(img);
+                    document.getElementById('pics').appendChild(pic);
+
+                    totalCounter++;
+                    document.getElementById('p').value = totalCounter;
+                    document.getElementById('titleprogress').innerHTML= '('+totalCounter+'/200) '+'Random Twitpic Wall';
+
+                } else {
+                    getImg();
+                }
+            } else {
+                getImg();
+            }
+        }
+    };
+    req.open('GET', 'https://cors-anywhere.herokuapp.com/twitpic.com/' + RandStr, true);
+    req.send(null);
+}
+
+function init() {
+    'use strict';
+    var i;
+    for (i = 0; i < 100; i += 1) {
+        getImg();
+    }
+
+
+
+}
+
+window.addEventListener('load', init, false);
+
+</script>
+<body onLoad="init();">
+<h1>Random Twitpic Wall</h1>
+<p>Warning: the script "bruteforces" Twitpic for totally random pictures. May include offensive content.  <a href="#" onClick="window.location.reload();return false;">→reload←</a></p>
+<div id="dots">Finding 200 images. <progress id='p' value='0' max="200"></progress> [<span id="current"></span>] 
+</div>
+
+    <noscript>Sorry, you need JavaScript in order to view this.</noscript>
+    <ul id="pics" class="pics"></ul>
+</body>
+</html>
+

@@ -6,11 +6,13 @@
 <style type="text/css">
 body {color:white;font-family:sans-serif;background-color:black;}
 span#current{font-family:monospace}
+img{height:200px;max-width:600px;border:1px solid #000;}
+img:hover {border:1px solid #fff;}
 </style>
 <script type="text/javascript">
 
 	var bodyWidth = GetWidth();
-	var imageWidth = Math.floor((bodyWidth-25)/5);
+	var imageWidth = Math.floor((bodyWidth-5)/6);
 	var numCols = Math.floor(bodyWidth/imageWidth);
 	var columns = Array();
 	for (i=0; i<numCols; i++)
@@ -90,9 +92,10 @@ function getLowestIndex() {
 
 function loadImages() 
 {
-	if (totalCounter < 50) {
+	if (totalCounter < 100) {
+		scroll(0, 0);
 		document.getElementById('p').value = totalCounter;
-		document.getElementById('titleprogress').innerHTML= '('+totalCounter+'/50) '+'Random Imgur Wall (old id5)';
+		document.getElementById('titleprogress').innerHTML= '('+totalCounter+'/100) '+'Random Imgur Wall (old id5)';
 		if (threads < 10) {
 			setTimeout(function() { loadImages();},100);
 			var imgObject = new Image();
@@ -104,7 +107,9 @@ function loadImages()
 					this.src = "http://i.imgur.com/" + randStr + ".jpg";
 				} else {
 					var randStr = randomString(5);
-					var newdiv = creatediv(randStr, "<a target=\"_blank\" href=\"" + imgObject.src + "\"><img src=\"" + imgObject.src + "\" width=\""+imageWidth+"\" height=\"" + Math.floor(Math.min((imgObject.height * (1 / (imgObject.width / imageWidth))),imageWidth)) + "\" /></a>");
+					var imgurl = imgObject.src.replace("http://i.", "http://");
+					var imgurl = imgurl.replace(".jpg", "");
+					var newdiv = creatediv(randStr, "<a target=\"_blank\" href=\"" + imgurl + "\"><img src=\"" + imgObject.src + "\"  /></a>");
 					var lowestIndex = getLowestIndex();
 					columns[lowestIndex] += Math.floor(Math.min((imgObject.height * (1 / (imgObject.width / imageWidth))),imageWidth));
 					
@@ -115,12 +120,11 @@ function loadImages()
 					setTimeout(function() { loadImages();},100);
 				}
 			}
-
 			imgObject.src = "http://i.imgur.com/" + randomString(5) + ".jpg";
 			threads++; 
 		}
 	} else {
-		if (threads == 0) {
+
 			document.getElementById("dots").innerHTML = 'Done!';
 			document.getElementById('titleprogress').innerHTML= '(done) Random Imgur Wall - (old id5)';
 			var newdiv = creatediv("reloadme", "<h1><a href=\"#\" onClick=\"window.location.reload();return false;\">→reload←</a></h1>");
@@ -134,14 +138,14 @@ function loadImages()
 				newdiv.style.top = columns[lowestIndex] - 300;
 			}
 			
-		}	
+			
 	}
 };
 
 </script>
 <body onLoad="loadImages();">
 <h1>Random Imgur Wall (old id5)</h1>
-<div id="dots">Loading 50 images [<span id="current"></span>] <progress id='p' value='0' max="50"></progress>
-</div>
+<p>Warning: the script "bruteforces" Imgur for totally random pictures. May include offensive content.</p>
+<p id="dots">Loading 100 images [<span id="current"></span>] <progress id='p' value='0' max="100"></progress></p>
 </body>
 </html>
