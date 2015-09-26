@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title id="titleprogress">Random Twimg Wall</title>
+<style type="text/css">body{color:white;font-family:sans-serif;background-color:black;}span#current{font-family:monospace}a{color:#fff;}
+.pics {
+    list-style-type: none;
+    padding:0;
+    margin:0;
+}
+
+.pics li {
+    display: inline-block;
+    width: 75px;
+    height: 75px;
+    vertical-align: middle;
+    text-align:center;
+
+}
+
+.pics img {
+    max-width:75px;
+    max-height:75px;
+    vertical-align:middle;
+    border:1px solid #000;
+}
+
+.pics img:hover {
+  border:1px solid #fff;
+}
+
+</style>
+<script type="text/javascript">
+var totalCounter = 0;
+
+function randomString(string_length)
+{
+	var chars = "0123456789abcdefghiklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	var output = "";
+	var index;
+
+	for (var id = 0; id < string_length; id++)
+	{
+		var index = Math.floor(Math.random() * chars.length);
+		output += chars.substring(index, index + 1);
+	}
+	document.getElementById("current").innerHTML = output;
+	return output;
+};
+
+function checkImage(imageSrc, good, bad) {
+    var img = new Image();
+    img.onload = good; 
+    img.onerror = bad;
+    img.src = imageSrc;
+}
+
+function loadImages() 
+{
+	if (totalCounter < 11) {
+      var imgUrl = 'https://pbs.twimg.com/media/CP0i1PZWUAAf99' + randomString(1) + '.jpg';
+      checkImage(imgUrl, 
+      function(){ document.getElementById('pics').innerHTML = '<li><a href="' + imgUrl + '"><img alt="" src="' + imgUrl + '"></a></li>'; totalCounter++; }, 
+      function(){  } 
+      );
+   } else {
+
+			document.getElementById("dots").innerHTML = 'Done!';
+			document.getElementById('titleprogress').innerHTML= '(done) Random Twimg Wall';
+	}
+}
+
+function init() {
+    'use strict';
+    var i;
+    for (i = 0; i < 10; i += 1) {
+        loadImages();
+    }
+}
+
+</script>
+<body onLoad="init();">
+<div style="background-color:red">Doesn't work automatically yet, use F5 until Pikachu appears</div>
+<h1>Random Twimg Wall</h1>
+<p>Warning: the script "bruteforces" Twimg for totally random pictures. May include offensive content.  <a href="#" onClick="window.location.reload();return false;">→reload←</a></p>
+<div id="dots">Finding 200 images. <progress id='p' value='0' max="200"></progress> [<span id="current"></span>] 
+</div>
+
+    <noscript>Sorry, you need JavaScript in order to view this.</noscript>
+    <ul id="pics" class="pics">
+<!-- <li><a href="https://pbs.twimg.com/media/CP0i1PZWUAAf99f.jpg"><img alt="" src="https://pbs.twimg.com/media/CP0i1PZWUAAf99f.jpg"></a></li> -->
+
+
+</ul>
+</body>
+</html>
+
